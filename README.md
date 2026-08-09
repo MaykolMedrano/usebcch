@@ -4,6 +4,12 @@
 
 **Acceso reproducible a las series estadísticas del Banco Central de Chile desde Stata.**
 
+[![Checks](https://img.shields.io/github/actions/workflow/status/MaykolMedrano/usebcch/ci.yml?branch=main&style=flat-square&label=checks)](https://github.com/MaykolMedrano/usebcch/actions)
+[![Stata](https://img.shields.io/badge/Stata-16%2B-2e7d32?style=flat-square)](https://www.stata.com/)
+[![bcchapi](https://img.shields.io/pypi/v/bcchapi?style=flat-square&label=bcchapi)](https://pypi.org/project/bcchapi/)
+[![BDE API](https://img.shields.io/badge/API-BCCh%20BDE-005baa?style=flat-square)](https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/index.htm)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+
 </div>
 
 ## Descripción

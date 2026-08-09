@@ -1,0 +1,46 @@
+name: Repository checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  stata-layout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate the Stata installation site
+        shell: bash
+        run: |
+          test -f stata/stata.toc
+          test -f stata/usebcch.pkg
+          test -f stata/usebcch.ado
+          test -f stata/usebcch_core.mata
+          test -f stata/usebcch_json.mata
+          test -f stata/usebcch.sthlp
+
+          if find . -maxdepth 1 -type f \( -name '*.ado' -o -name '*.mata' -o -name '*.sthlp' \) | grep -q .; then
+            echo "Stata runtime files must remain under stata/"
+            exit 1
+          fi
+
+          if test -e .env; then
+            echo ".env must never be committed"
+            exit 1
+          fi
+
+          awk '/^[fF][[:space:]]+/ {print $2}' stata/usebcch.pkg | while read -r file; do
+            test -f "stata/$file"
+          done
+
+      - name: Check documentation paths
+        shell: bash
+        run: |
+          test -f stata/docs/GUIA_USUARIO.md
+          test -f stata/docs/SPEC.md
+          test -f stata/docs/DISTRIBUTION.md
+          test -f stata/scripts/run-tests.ps1
+          test -f stata/scripts/build-release.ps1
