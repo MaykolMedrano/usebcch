@@ -1,0 +1,127 @@
+# Distribución de `usebcch`
+
+Este documento distingue el repositorio de desarrollo, la carpeta preparada
+para validación y el ZIP final. El script no crea un ZIP de manera automática.
+
+## Estructura del repositorio
+
+La subcarpeta `stata/` es el sitio `net install` válido. Stata necesita
+encontrar allí `stata.toc`, `usebcch.pkg` y todos los archivos declarados en el
+manifiesto; la raíz queda reservada para documentación y desarrollo.
+
+```text
+usebcch/
+  stata/                 sitio instalable de Stata
+    stata.toc            índice del sitio Stata
+    usebcch.pkg          manifiesto de instalación y versión
+    usebcch.ado          comando público e implementación ado
+    usebcch_json.mata    parser JSON nativo
+    usebcch_core.mata    núcleo de respuesta y materialización
+    usebcch.sthlp        ayuda accesible con help usebcch
+  README.md              presentación y referencia rápida
+  CHANGELOG.md           historia de versiones
+  LICENSE                licencia y atribución
+  stata/docs/            guías y especificación técnica
+  stata/scripts/          automatización de pruebas y distribución
+  stata/tests/            pruebas deterministas y pruebas live optativas
+  artifacts/             logs generados; ignorados por Git
+  dist/                  releases preparados; ignorados por Git
+```
+
+Los archivos de ejecución están agrupados en `stata/`; `.env`, logs, fixtures,
+pruebas y documentación no forman parte del manifiesto instalable.
+
+## Fuente única del contenido distribuible
+
+`usebcch.pkg` declara los archivos instalables con líneas `f`. El script de
+release lee esas líneas y la declaración `d Version` directamente; no mantiene una
+segunda lista manual de archivos de ejecución que pueda quedar desactualizada.
+Añade `stata/stata.toc`, el propio manifiesto, la documentación del proyecto y
+`SHA256SUMS.txt`.
+
+Antes de preparar una versión, compruebe que coincidan:
+
+- la versión y fecha de `usebcch.pkg`;
+- la cabecera de versión de `usebcch.ado` y `usebcch.sthlp`;
+- la entrada correspondiente de `CHANGELOG.md`;
+- los ejemplos y requisitos de `README.md`, `stata/docs/GUIA_USUARIO.md` y la ayuda.
+
+## Flujo de publicación
+
+### 1. Ejecutar las pruebas de desarrollo
+
+Desde PowerShell y la raíz del proyecto:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File stata/scripts/run-tests.ps1
+```
+
+El runner usa por defecto
+`C:\Program Files\StataNow19\StataSE-64.exe`, espera el resultado y mueve los
+logs a `artifacts/logs/<fecha-hora>/`.
+
+### 2. Preparar una carpeta, todavía sin ZIP
+
+```powershell
+powershell -ExecutionPolicy Bypass -File stata/scripts/build-release.ps1
+```
+
+Esto crea `dist/usebcch-0.4.0/`, copia solo los archivos declarados y calcula
+SHA-256. Se detiene si la carpeta ya existe para no mezclar dos construcciones.
+
+### 3. Validar exactamente lo que se publicaría
+
+Desde Stata, situado en la raíz del repositorio:
+
+```stata
+do stata/tests/distribution.do "dist/usebcch-0.4.0"
+```
+
+La prueba cambia `PERSONAL` dentro de ese proceso, instala desde `dist/`, busca
+los archivos instalados, abre la ayuda y comprueba que no se haya distribuido
+una configuración de credenciales.
+
+Revise además `dist/usebcch-0.4.0/SHA256SUMS.txt` y confirme que no existan
+`.env`, credenciales, logs ni archivos de pruebas.
+
+### 4. Crear el ZIP únicamente después de aprobar la carpeta
+
+El script se niega a sobrescribir la carpeta preparada. Una vez validada, cree
+el ZIP de esa misma carpeta con la opción explícita:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File stata/scripts/build-release.ps1 -Archive
+```
+
+El script vuelve a comprobar el manifiesto y todos los checksums antes de crear
+`dist/usebcch-0.4.0.zip`. La opción `-Archive` es deliberadamente optativa para
+impedir que una versión no revisada parezca final.
+
+## Instalación para usuarios
+
+### Cuenta y credenciales BDE/SI3
+
+Cada usuario debe crear o activar su propia cuenta en el
+[portal BDE/SI3](https://si3.bcentral.cl/siete), seleccionando
+**Registrarse**. Quienes ya tienen cuenta pueden usar **Usuario Registrado**
+o **Recuperar Contraseña**. `usebcch` no crea cuentas ni proporciona usuarios
+o contraseñas; cada usuario debe configurar sus propias credenciales antes de
+consultar la API.
+
+Antes de publicar, la instalación local apunta a `stata/` o a la subcarpeta
+`stata/` de la carpeta preparada:
+
+```stata
+net install usebcch, from("C:/ruta/usebcch/stata") replace
+```
+
+Después de publicar en GitHub Pages o en una ruta `raw`, `from()` debe señalar
+al directorio web exacto `.../usebcch/stata` donde estén `stata.toc` y
+`usebcch.pkg`, no a la página
+HTML del repositorio ni al ZIP.
+
+## Secretos
+
+`.env` está ignorado por Git y no figura en `usebcch.pkg`; por tanto, el script
+no lo copia a `dist/`. La prueba de distribución debe seguir comprobando que una
+instalación nueva empiece sin credenciales configuradas.

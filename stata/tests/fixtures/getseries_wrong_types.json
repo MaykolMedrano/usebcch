@@ -1,0 +1,11 @@
+{
+  "Codigo": 0,
+  "Descripcion": "Success",
+  "Series": {
+    "seriesId": "TEST.BAD.D",
+    "descripEsp": "Tipo incorrecto",
+    "descripIng": "Wrong type",
+    "Obs": "this must be an array"
+  },
+  "SeriesInfos": []
+}

@@ -1,0 +1,32 @@
+{
+  "Codigo": 0,
+  "Descripcion": "Success",
+  "Series": {
+    "descripEsp": "null",
+    "descripIng": "null",
+    "seriesId": "null",
+    "Obs": []
+  },
+  "SeriesInfos": [
+    {
+      "seriesId": "F073.TCO.PRE.Z.D",
+      "frequencyCode": "DAILY",
+      "spanishTitle": "Tipo de cambio observado",
+      "englishTitle": "Observed exchange rate",
+      "firstObservation": "02-01-1984",
+      "lastObservation": "19-07-2024",
+      "updatedAt": "20-07-2024",
+      "createdAt": "15-03-2012"
+    },
+    {
+      "seriesId": "TEST.UNICODE.D",
+      "frequencyCode": "DAILY",
+      "spanishTitle": "Índice, energía y producción — prueba",
+      "englishTitle": "Index, energy & production — test",
+      "firstObservation": "31-12-1999",
+      "lastObservation": "01-01-2024",
+      "updatedAt": "",
+      "createdAt": "fecha inválida"
+    }
+  ]
+}

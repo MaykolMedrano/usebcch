@@ -1,0 +1,14 @@
+{
+  "Codigo": 0,
+  "Descripcion": "Success",
+  "Series": {
+    "descripEsp": "Tasa de política monetaria",
+    "descripIng": "Monetary policy rate",
+    "seriesId": "F022.TPM.TIN.D001.NO.Z.D",
+    "Obs": [
+      {"indexDateString": "02-01-2024", "value": "8.25", "statusCode": "OK"},
+      {"indexDateString": "03-01-2024", "value": "8.25", "statusCode": "OK"}
+    ]
+  },
+  "SeriesInfos": []
+}

@@ -1,0 +1,17 @@
+{
+  "Codigo": 0,
+  "Descripcion": "Success",
+  "Series": {
+    "descripEsp": "Serie B",
+    "descripIng": "Series B",
+    "seriesId": "TEST.B.D",
+    "Obs": [
+      {"indexDateString":"30-01-2024","value":"100","statusCode":"OK"},
+      {"indexDateString":"31-01-2024","value":"200","statusCode":"OK"},
+      {"indexDateString":"28-02-2024","value":"300","statusCode":"OK"},
+      {"indexDateString":"29-02-2024","value":"400","statusCode":"OK"},
+      {"indexDateString":"31-03-2024","value":"800","statusCode":"OK"}
+    ]
+  },
+  "SeriesInfos": []
+}

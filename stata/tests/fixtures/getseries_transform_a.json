@@ -1,0 +1,17 @@
+{
+  "Codigo": 0,
+  "Descripcion": "Success",
+  "Series": {
+    "descripEsp": "Serie A",
+    "descripIng": "Series A",
+    "seriesId": "TEST.A.D",
+    "Obs": [
+      {"indexDateString":"30-01-2024","value":"10","statusCode":"OK"},
+      {"indexDateString":"31-01-2024","value":"20","statusCode":"OK"},
+      {"indexDateString":"28-02-2024","value":"30","statusCode":"OK"},
+      {"indexDateString":"29-02-2024","value":"50","statusCode":"OK"},
+      {"indexDateString":"31-03-2024","value":"60","statusCode":"OK"}
+    ]
+  },
+  "SeriesInfos": []
+}

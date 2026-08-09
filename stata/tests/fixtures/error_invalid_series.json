@@ -1,0 +1,11 @@
+{
+  "Codigo": -50,
+  "Descripcion": "Series not found",
+  "Series": {
+    "descripEsp": "null",
+    "descripIng": "null",
+    "seriesId": "null",
+    "Obs": []
+  },
+  "SeriesInfos": []
+}
