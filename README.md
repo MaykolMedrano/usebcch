@@ -43,15 +43,16 @@ La API Python y `usebcch` requieren una cuenta propia del portal BDE/SI3.
 
 Requiere Stata 16 o superior y acceso HTTPS.
 
-Para una copia local del repositorio:
+Instalación desde el repositorio:
 
 ```stata
-net install usebcch, from("C:/ruta/usebcch/stata") replace
+net install usebcch, ///
+    from("https://raw.githubusercontent.com/MaykolMedrano/usebcch/main/stata") replace
 ```
 
-Cuando el repositorio se publique, `from()` debe apuntar al directorio raw
-`stata/` que contenga `stata.toc` y `usebcch.pkg`, no a una página HTML ni a un
-archivo ZIP.
+Para probar una copia local durante el desarrollo, sustituya la URL por la
+ruta de su carpeta `stata/`. En ambos casos, `from()` debe apuntar al directorio
+que contenga `stata.toc` y `usebcch.pkg`, no a una página HTML ni a un archivo ZIP.
 
 Ayuda: [guía de usuario](stata/docs/GUIA_USUARIO.md) · [ayuda de
 Stata](stata/usebcch.sthlp) · [especificación técnica](stata/docs/SPEC.md) ·

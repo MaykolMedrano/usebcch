@@ -108,17 +108,17 @@ o **Recuperar Contraseña**. `usebcch` no crea cuentas ni proporciona usuarios
 o contraseñas; cada usuario debe configurar sus propias credenciales antes de
 consultar la API.
 
-Antes de publicar, la instalación local apunta a `stata/` o a la subcarpeta
-`stata/` de la carpeta preparada:
+La instalación publicada apunta al sitio raw del repositorio:
 
 ```stata
-net install usebcch, from("C:/ruta/usebcch/stata") replace
+net install usebcch, ///
+    from("https://raw.githubusercontent.com/MaykolMedrano/usebcch/main/stata") replace
 ```
 
-Después de publicar en GitHub Pages o en una ruta `raw`, `from()` debe señalar
-al directorio web exacto `.../usebcch/stata` donde estén `stata.toc` y
-`usebcch.pkg`, no a la página
-HTML del repositorio ni al ZIP.
+Para validar una carpeta local preparada, sustituya la URL por
+`C:/ruta/usebcch/stata`. En ambos casos, `from()` debe señalar el directorio
+exacto donde estén `stata.toc` y `usebcch.pkg`, no la página HTML del
+repositorio ni el ZIP.
 
 ## Secretos
 

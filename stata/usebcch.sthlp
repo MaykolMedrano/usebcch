@@ -38,14 +38,14 @@ Busque el código de una serie y luego descárguela:{p_end}
 {title:Instalación y actualización}
 
 {pstd}
-Para instalar desde la subcarpeta {cmd:stata/} que contenga {cmd:stata.toc} y
-{cmd:usebcch.pkg}:{p_end}
+Para instalar desde el repositorio público:{p_end}
 
-{phang2}{cmd:. net install usebcch, from("C:/ruta/usebcch/stata") replace}{p_end}
+{phang2}{cmd:. net install usebcch, from("https://raw.githubusercontent.com/MaykolMedrano/usebcch/main/stata") replace}{p_end}
 
 {pstd}
-Para una instalación web, {opt from()} debe apuntar al directorio raw exacto
-que contiene esos dos archivos, no a una página HTML ni a un ZIP.{p_end}
+Para desarrollo local, sustituya la URL por la carpeta {cmd:stata/}. En ambos
+casos, {opt from()} debe apuntar al directorio exacto que contiene {cmd:stata.toc}
+y {cmd:usebcch.pkg}, no a una página HTML ni a un ZIP.{p_end}
 
 {title:Sintaxis}
 

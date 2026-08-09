@@ -4,20 +4,21 @@
 Banco Central de Chile directamente desde Stata 16 o superior. No requiere
 Python, pero la API del BCCh sí exige usuario y contraseña.
 
-## 1. Instalación local
+## 1. Instalación
 
-Mientras el proyecto no esté publicado en una dirección web, instálelo desde
-la subcarpeta `stata/`, que contiene `stata.toc` y `usebcch.pkg`:
+Instale directamente desde el repositorio público, cuya subcarpeta `stata/`
+contiene `stata.toc` y `usebcch.pkg`:
 
 ```stata
 net install usebcch, ///
-    from("C:/Users/horio/OneDrive - Universidad Católica de Chile/Proyectos_GitHub/usebcch/stata") ///
+    from("https://raw.githubusercontent.com/MaykolMedrano/usebcch/main/stata") ///
     replace
 help usebcch
 ```
 
-`net install` acepta una ruta local en `from()`. No anteponga `file://` y use
-barras `/` para evitar problemas con espacios y barras invertidas.
+Para desarrollo local puede reemplazar la URL por la ruta de su carpeta
+`stata/`. No anteponga `file://` y use barras `/` para evitar problemas con
+espacios y barras invertidas.
 
 ## 2. Crear la cuenta BDE/SI3 y registrar las credenciales
 

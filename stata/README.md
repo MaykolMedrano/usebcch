@@ -4,11 +4,14 @@ Esta carpeta contiene el runtime completo de `usebcch` y es el sitio exacto
 para `net install`. `stata.toc` y `usebcch.pkg` deben permanecer directamente
 en esta carpeta.
 
-## Instalación local
+## Instalación
 
 ```stata
-net install usebcch, from("C:/ruta/usebcch/stata") replace
+net install usebcch, ///
+    from("https://raw.githubusercontent.com/MaykolMedrano/usebcch/main/stata") replace
 ```
+
+Para desarrollo local, sustituya la URL por la ruta de su carpeta `stata/`.
 
 El paquete requiere Stata 16 o superior, HTTPS y credenciales propias del
 portal BDE/SI3 del Banco Central de Chile.
