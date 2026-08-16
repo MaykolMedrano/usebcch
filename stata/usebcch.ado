@@ -443,6 +443,9 @@ program define _usebcch_search, rclass
         LANGuage(string) CLEAR TOKEN(string) CREDentials(string) ENVfile(string) ///
         REGEX CACHE REFRESH]
     local query : list clean query
+    if substr(`"`query'"',1,1)==char(34) & substr(`"`query'"',-1,1)==char(34) {
+        local query=substr(`"`query'"',2,strlen(`"`query'"')-2)
+    }
     _usebcch_require_clear, `clear'
     if "`frequency'"=="" local frequency all
     if "`language'"=="" local language es

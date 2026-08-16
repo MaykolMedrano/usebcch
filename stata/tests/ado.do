@@ -1,6 +1,6 @@
 version 16.0
 clear all
-adopath ++ "."
+adopath ++ "stata"
 capture mata: mata clear
 mata:
 string scalar ubcch_core_version()

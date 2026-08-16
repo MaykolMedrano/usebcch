@@ -1,6 +1,6 @@
 version 16.0
 clear all
-adopath ++ "."
+adopath ++ "stata"
 do stata/usebcch.ado
 
 usebcch get F073.TCO.PRE.Z.D, from(2024-01-02) to(2024-01-10) long clear

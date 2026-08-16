@@ -1,6 +1,6 @@
 version 16.0
 clear all
-adopath ++ "."
+adopath ++ "stata"
 do stata/usebcch.ado
 
 tempfile credentials

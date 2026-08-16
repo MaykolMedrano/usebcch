@@ -1,6 +1,6 @@
 version 16.0
 clear all
-adopath ++ "."
+adopath ++ "stata"
 do stata/usebcch.ado
 sysuse auto, clear
 local original_N=_N

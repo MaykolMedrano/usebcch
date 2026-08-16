@@ -3,6 +3,7 @@
 ## 0.5.1 - 2026-08-16
 
 - Se añadió `APIKEY` como alias de `BCCH_TOKEN`, verificado contra el endpoint real del BCCh.
+- Se corrigió la búsqueda de frases entre comillas, por ejemplo `"tipo de cambio"`.
 
 ## 0.5.0 - 2026-08-16
 

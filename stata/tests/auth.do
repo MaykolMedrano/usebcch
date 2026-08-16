@@ -1,7 +1,7 @@
 version 16.0
 clear all
 set more off
-adopath ++ "."
+adopath ++ "stata"
 do stata/usebcch.ado
 
 local project `"`c(pwd)'"'

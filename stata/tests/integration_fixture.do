@@ -1,6 +1,6 @@
 version 16.0
 clear all
-adopath ++ "."
+adopath ++ "stata"
 do stata/usebcch.ado
 
 tempfile credentials
@@ -73,5 +73,10 @@ usebcch search "tipo", frequency(daily) language(es) ///
 assert _N==1
 assert series_id[1]=="F073.TCO.PRE.Z.D"
 assert first_observation[1]==mdy(1,2,1984)
+
+usebcch search "tipo de cambio", frequency(daily) language(es) ///
+    credentials(`"`credentials'"') clear
+assert _N==1
+assert series_id[1]=="F073.TCO.PRE.Z.D"
 
 display as result "usebcch fixture integration: all tests passed"
