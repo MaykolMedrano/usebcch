@@ -65,7 +65,7 @@ Replicación: [suite de pruebas Stata](stata/tests/)
 La documentacion publica del BCCh describe crear una cuenta en BDE y activar
 las credenciales de la API. usebcch admite ese formato heredado mediante
 BCCH_USER y BCCH_PASSWORD. Algunas cuentas tambien muestran un API Key Token
-en Mi Cuenta > Apikey Token; en ese caso puede usar BCCH_TOKEN, token() o un
+en Mi Cuenta > Apikey Token; en ese caso puede usar BCCH_TOKEN (o el alias APIKEY), token() o un
 archivo de una sola linea con el token.
 
 Para el formato entregado por su cuenta, guarde las credenciales en un archivo

@@ -4,7 +4,7 @@ mata:
 
 string scalar ubcch_core_version()
 {
-    return("0.5.0")
+    return("0.5.1")
 }
 
 string scalar ubcch_urlencode(string scalar value)
@@ -28,13 +28,14 @@ string scalar ubcch_urlencode(string scalar value)
 void ubcch_dotenv_auth(string scalar filename)
 {
     real scalar handle, equals, firstline
-    string scalar line, key, value, token, user, password, first, last
+    string scalar line, key, value, token, apikey, user, password, first, last
     handle=fopen(filename,"r")
     if (handle<0) {
         errprintf("usebcch: no se pudo leer envfile()\n")
         exit(601)
     }
     token=""
+    apikey=""
     user=""
     password=""
     firstline=1
@@ -55,10 +56,12 @@ void ubcch_dotenv_auth(string scalar filename)
                 value=substr(value,2,strlen(value)-2)
         }
         if (key=="BCCH_TOKEN") token=value
+        if (key=="APIKEY") apikey=value
         if (key=="BCCH_USER") user=value
         if (key=="BCCH_PASSWORD") password=value
     }
     fclose(handle)
+    if (!strlen(token)) token=apikey
     st_local("_ub_file_token",ubcch_urlencode(token))
     st_local("_ub_file_user",ubcch_urlencode(user))
     st_local("_ub_file_pass",ubcch_urlencode(password))

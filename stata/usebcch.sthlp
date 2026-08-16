@@ -1,5 +1,5 @@
 {smcl}
-{* *! usebcch 0.5.0 16aug2026}{...}
+{* *! usebcch 0.5.1 16aug2026}{...}
 {vieweralsosee "Portal BDE/SI3" "https://si3.bcentral.cl/siete"}{...}
 {vieweralsosee "Portal y documentación de la API BDE" "https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/doc_es.htm"}{...}
 {title:Título}
@@ -78,7 +78,7 @@ y {cmd:usebcch.pkg}, no a una página HTML ni a un ZIP.{p_end}
 La documentacion publica del BCCh indica crear una cuenta BDE y activar las
 credenciales de la API. El formato documentado usa {cmd:BCCH_USER} y
 {cmd:BCCH_PASSWORD}. Algunas cuentas tambien muestran un {bf:API Key Token} en
-{bf:Mi Cuenta > Apikey Token}; en ese caso puede usar {cmd:BCCH_TOKEN} o
+{bf:Mi Cuenta > Apikey Token}; en ese caso puede usar {cmd:BCCH_TOKEN} (tambien se acepta {cmd:APIKEY}) o
 {opt token()}.
 
 {pstd}
@@ -89,13 +89,13 @@ Guarde el formato entregado por el portal en un archivo privado, por ejemplo
 {phang2}{cmd:BCCH_PASSWORD=mi_contrasena}{p_end}
 
 {pstd}
-Si su cuenta entrega token, use {cmd:BCCH_TOKEN=mi_api_key_token} en lugar del
-par anterior. {cmd:usebcch auth set, envfile(...)} registra solamente la ruta
+Si su cuenta entrega token, use {cmd:BCCH_TOKEN=mi_api_key_token} o
+{cmd:APIKEY=mi_api_key_token} en lugar del par anterior. {cmd:usebcch auth set, envfile(...)} registra solamente la ruta
 del archivo bajo {cmd:PERSONAL}; no copia ni guarda secretos.{p_end}
 
 {pstd}
 Las fuentes se evaluan en este orden: {opt token()}, {opt credentials()},
-{opt envfile()}, la variable de entorno {cmd:BCCH_TOKEN}, un `.env` en el
+{opt envfile()}, las variables de entorno {cmd:BCCH_TOKEN} o {cmd:APIKEY}, un `.env` en el
 directorio de trabajo y, finalmente, el archivo registrado mediante
 {cmd:auth set}. {opt token()} no puede combinarse con {opt credentials()} ni
 {opt envfile()}. {opt credentials()} acepta un archivo de una sola linea con

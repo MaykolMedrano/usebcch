@@ -41,6 +41,8 @@ Token**. Si ese es su caso, puede usar:
 BCCH_TOKEN=mi_api_key_token
 ```
 
+También se acepta `APIKEY=mi_api_key_token` como alias.
+
 Registre la ruta en Stata:
 
 ```stata

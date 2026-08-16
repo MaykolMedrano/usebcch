@@ -1,4 +1,4 @@
-*! usebcch 0.5.0 16aug2026
+*! usebcch 0.5.1 16aug2026
 program define usebcch, rclass
     version 16.0
     gettoken subcommand 0 : 0, parse(" ,")
@@ -650,7 +650,7 @@ program define _usebcch_auth, rclass
         _usebcch_load_mata
         mata: ubcch_dotenv_auth(st_local("selected"))
         if !real(`"`_ub_file_ok'"') {
-            display as error "envfile() must define BCCH_TOKEN or BCCH_USER and BCCH_PASSWORD"
+            display as error "envfile() must define BCCH_TOKEN/APIKEY or BCCH_USER and BCCH_PASSWORD"
             exit 198
         }
         tempname config_handle
@@ -715,7 +715,7 @@ end
 program define _usebcch_load_mata
     version 16.0
 
-    capture mata: assert(ubcch_core_version()=="0.5.0")
+    capture mata: assert(ubcch_core_version()=="0.5.1")
     if !_rc exit
 
     /* Ado updates do not clear compiled Mata functions.  Drop only this
@@ -784,7 +784,7 @@ program define _usebcch_credentials
     else if `"`envfile'"'!="" {
         mata: ubcch_dotenv_auth(st_local("envfile"))
         if !real(`"`_ub_file_ok'"') {
-            display as error "envfile() must define BCCH_TOKEN or BCCH_USER and BCCH_PASSWORD"
+            display as error "envfile() must define BCCH_TOKEN/APIKEY or BCCH_USER and BCCH_PASSWORD"
             exit 198
         }
         c_local _ub_auth_token `"`_ub_file_token'"'
@@ -794,6 +794,7 @@ program define _usebcch_credentials
     }
     else {
         local token : environment BCCH_TOKEN
+        if `"`token'"'=="" local token : environment APIKEY
         if `"`token'"'!="" {
             mata: st_local("_ub_encoded_token",ubcch_urlencode(st_local("token")))
             c_local _ub_auth_token `"`_ub_encoded_token'"'
@@ -837,7 +838,7 @@ program define _usebcch_credentials
     }
 
     if `"`user'"'=="" | `"`password'"'=="" {
-        display as error "credentials not found; set BCCH_TOKEN, run usebcch auth set, envfile(filename), or define BCCH_USER/BCCH_PASSWORD"
+        display as error "credentials not found; set BCCH_TOKEN or APIKEY, run usebcch auth set, envfile(filename), or define BCCH_USER/BCCH_PASSWORD"
         exit 198
     }
     mata: st_local("_ub_encoded_user",ubcch_urlencode(st_local("user")))

@@ -13,7 +13,7 @@ son solicitudes HTTPS GET con parámetros en la query.
 
 La documentación pública describe `user` y `pass` como credenciales activadas
 para la cuenta BDE. Algunas cuentas pueden ofrecer un API Key Token; `usebcch`
-lo acepta como `token` y prioriza ese método cuando está disponible. El formato
+lo acepta desde `BCCH_TOKEN` o `APIKEY` como parámetro `token` y prioriza ese método cuando está disponible. El formato
 heredado continúa soportado.
 
 `GetSeries` envía estos parámetros conceptuales:

@@ -66,7 +66,7 @@ logs a `artifacts/logs/<fecha-hora>/`.
 powershell -ExecutionPolicy Bypass -File stata/scripts/build-release.ps1
 ```
 
-Esto crea `dist/usebcch-0.5.0/`, copia solo los archivos declarados y calcula
+Esto crea `dist/usebcch-0.5.1/`, copia solo los archivos declarados y calcula
 SHA-256. Se detiene si la carpeta ya existe para no mezclar dos construcciones.
 
 ### 3. Validar exactamente lo que se publicaría
@@ -74,14 +74,14 @@ SHA-256. Se detiene si la carpeta ya existe para no mezclar dos construcciones.
 Desde Stata, situado en la raíz del repositorio:
 
 ```stata
-do stata/tests/distribution.do "dist/usebcch-0.5.0"
+do stata/tests/distribution.do "dist/usebcch-0.5.1"
 ```
 
 La prueba cambia `PERSONAL` dentro de ese proceso, instala desde `dist/`, busca
 los archivos instalados, abre la ayuda y comprueba que no se haya distribuido
 una configuración de credenciales.
 
-Revise además `dist/usebcch-0.5.0/SHA256SUMS.txt` y confirme que no existan
+Revise además `dist/usebcch-0.5.1/SHA256SUMS.txt` y confirme que no existan
 `.env`, credenciales, logs ni archivos de pruebas.
 
 ### 4. Crear el ZIP únicamente después de aprobar la carpeta
@@ -94,7 +94,7 @@ powershell -ExecutionPolicy Bypass -File stata/scripts/build-release.ps1 -Archiv
 ```
 
 El script vuelve a comprobar el manifiesto y todos los checksums antes de crear
-`dist/usebcch-0.5.0.zip`. La opción `-Archive` es deliberadamente optativa para
+`dist/usebcch-0.5.1.zip`. La opción `-Archive` es deliberadamente optativa para
 impedir que una versión no revisada parezca final.
 
 ## Instalación para usuarios
@@ -104,7 +104,7 @@ impedir que una versión no revisada parezca final.
 La documentación pública indica crear una cuenta BDE, activar las credenciales
 de la API y aceptar los términos y condiciones. Use el usuario y contraseña
 entregados por el portal. Si su cuenta muestra **Mi Cuenta > Apikey Token**,
-también puede configurar `BCCH_TOKEN`. SOAP mantiene usuario y contraseña.
+también puede configurar `BCCH_TOKEN` o su alias `APIKEY`. SOAP mantiene usuario y contraseña.
 
 La instalación publicada apunta al sitio raw del repositorio:
 

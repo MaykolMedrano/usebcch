@@ -20,7 +20,7 @@ portal BDE/SI3 del Banco Central de Chile.
 
 La documentación pública del BCCh indica crear una cuenta BDE y activar las
 credenciales de la API. Use el usuario y contraseña que entregue el portal; si
-su cuenta muestra **Mi Cuenta > Apikey Token**, también puede usar BCCH_TOKEN.
+su cuenta muestra **Mi Cuenta > Apikey Token**, también puede usar `BCCH_TOKEN`; se acepta `APIKEY` como alias.
 
 Guárdelo en un archivo privado:
 

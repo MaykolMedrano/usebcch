@@ -18,6 +18,17 @@ _usebcch_credentials, envfile(`"`envfile'"')
 assert "`_ub_auth_token'"=="test%2Btoken%40example.com"
 assert "`_ub_auth_user'"==""
 
+tempfile aliasfile
+file open alias_handle using `"`aliasfile'"', write text replace
+file write `alias_handle' "APIKEY=test+token@example.com" _n
+file close `alias_handle'
+mata: ubcch_dotenv_auth(st_local("aliasfile"))
+assert "`_ub_file_ok'"=="1"
+mata: assert(st_local("_ub_file_token")==ubcch_urlencode("test+token@example.com"))
+_usebcch_credentials, envfile(`"`aliasfile'"')
+assert "`_ub_auth_token'"=="test%2Btoken%40example.com"
+assert "`_ub_auth_user'"==""
+
 global UBCCH_TEST_TOKEN "`_ub_auth_token'"
 capture program drop _usebcch_copy
 program define _usebcch_copy
