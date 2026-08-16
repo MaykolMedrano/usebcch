@@ -1,5 +1,13 @@
 # Registro de cambios
 
+## 0.5.0 - 2026-08-16
+
+- Se adaptó la autenticación REST para aceptar API Key Token cuando el portal lo ofrece.
+- Se conservaron BCCH_USER y BCCH_PASSWORD como formato documentado y compatibilidad heredada.
+- Se omitieron firstdate y lastdate cuando no se especifican y se actualizaron las guías al nuevo portal BDE.
+
+
+
 ## 0.4.0 - 2026-07-22
 
 - Se estandarizó el eje temporal de salida como `time`, con `%td`, `%tm`, `%tq`

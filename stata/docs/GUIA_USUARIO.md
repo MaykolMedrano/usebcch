@@ -2,7 +2,7 @@
 
 `usebcch` descarga y busca series de la Base de Datos Estadísticos (BDE) del
 Banco Central de Chile directamente desde Stata 16 o superior. No requiere
-Python, pero la API del BCCh sí exige usuario y contraseña.
+Python. La API exige una cuenta BDE con credenciales activadas.
 
 ## 1. Instalación
 
@@ -20,45 +20,41 @@ Para desarrollo local puede reemplazar la URL por la ruta de su carpeta
 `stata/`. No anteponga `file://` y use barras `/` para evitar problemas con
 espacios y barras invertidas.
 
-## 2. Crear la cuenta BDE/SI3 y registrar las credenciales
+## 2. Cuenta BDE y credenciales
 
-Antes del primer llamado, cada usuario debe crear o activar su propia cuenta
-en el [portal BDE/SI3](https://si3.bcentral.cl/siete). Seleccione
-**Registrarse** y siga las instrucciones del Banco Central de Chile. Si ya
-tiene una cuenta, use **Usuario Registrado**; para recuperar el acceso,
-seleccione **Recuperar Contraseña**.
+La documentación pública del BCCh indica crear o activar una cuenta en BDE y
+habilitar las credenciales de la API. Siga el flujo de **Registrarse** o
+**Usuario Registrado** en la [página de la API BDE](https://si3.bcentral.cl/Siete/es/Siete/API?respuesta=)
+y acepte los términos y condiciones.
 
-`usebcch` no crea cuentas, no entrega usuarios ni contraseñas y no permite
-compartir las credenciales de otra persona. Después de obtener su usuario y
-contraseña, guárdelos en un archivo privado:
-
-Cree un archivo privado, por ejemplo `C:/credenciales/bcch.env`, con estas dos
-líneas:
+El formato documentado usa usuario y contraseña:
 
 ```text
 BCCH_USER=mi_usuario
-BCCH_PASSWORD=mi_contraseña
+BCCH_PASSWORD=mi_contrasena
 ```
 
-Registre su ubicación en Stata:
+Algunas cuentas muestran además un **API Key Token** en **Mi Cuenta > Apikey
+Token**. Si ese es su caso, puede usar:
+
+```text
+BCCH_TOKEN=mi_api_key_token
+```
+
+Registre la ruta en Stata:
 
 ```stata
 usebcch auth set, envfile("C:/credenciales/bcch.env")
 usebcch auth status
 ```
 
-Desde ese momento no necesita repetir `envfile()` en cada llamada. `usebcch`
-guarda únicamente la ruta del archivo bajo el directorio `PERSONAL` de Stata;
-no copia las credenciales. Para olvidar la ruta registrada:
+Desde ese momento no necesita repetir `envfile()` en cada llamada. También se
+admiten la variable de entorno `BCCH_TOKEN`, la opción `token()` para una
+llamada puntual y `credentials()` con un archivo de una sola línea. El archivo
+`.env` nunca debe incorporarse al repositorio ni a un paquete de distribución.
 
-```stata
-usebcch auth clear
-```
-
-El archivo `.env` nunca debe incorporarse al repositorio ni a un paquete de
-distribución. También se admiten las variables de entorno `BCCH_USER` y
-`BCCH_PASSWORD`, un `.env` en el directorio de trabajo o las opciones explícitas
-`envfile()` y `credentials()`; consulte `help usebcch` para la precedencia.
+La API permite hasta cinco series por segundo por cuenta, sin importar la
+dirección IP.
 
 ## 3. Encontrar el código de una serie
 
@@ -169,8 +165,7 @@ archivo de credenciales ni su registro.
 
 ## 8. Problemas frecuentes
 
-- `define BCCH_USER and BCCH_PASSWORD`: registre el `.env` con `usebcch auth
-  set` y compruebe `usebcch auth status`.
+- `define BCCH_TOKEN`: use el token que muestra su cuenta en **Mi Cuenta > Apikey Token**; si el portal entrega usuario y contraseña, defina `BCCH_USER` y `BCCH_PASSWORD`.
 - `variable date not found`: desde la versión 0.3 la variable temporal se llama
   `time`, igual que en `usebcrp`.
 - Primeros períodos faltantes después de `variation(#)`: son el rezago necesario

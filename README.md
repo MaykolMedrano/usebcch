@@ -7,7 +7,7 @@
 [![Checks](https://img.shields.io/github/actions/workflow/status/MaykolMedrano/usebcch/ci.yml?branch=main&style=flat-square&label=checks)](https://github.com/MaykolMedrano/usebcch/actions)
 [![Stata](https://img.shields.io/badge/Stata-16%2B-2e7d32?style=flat-square)](https://www.stata.com/)
 [![bcchapi](https://img.shields.io/pypi/v/bcchapi?style=flat-square&label=bcchapi)](https://pypi.org/project/bcchapi/)
-[![BDE API](https://img.shields.io/badge/API-BCCh%20BDE-005baa?style=flat-square)](https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/index.htm)
+[![BDE API](https://img.shields.io/badge/API-BCCh%20BDE-005baa?style=flat-square)](https://si3.bcentral.cl/Siete/es/Siete/API?respuesta=)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 </div>
@@ -35,7 +35,7 @@ pip install bcchapi
 ```
 
 Ayuda: [bcchapi en PyPI](https://pypi.org/project/bcchapi/) · [ejemplos
-oficiales de la API BDE](https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/ejemplos.htm)
+oficiales de la API BDE](https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/doc_es.htm)
 
 La API Python y `usebcch` requieren una cuenta propia del portal BDE/SI3.
 
@@ -62,20 +62,35 @@ Replicación: [suite de pruebas Stata](stata/tests/)
 
 ## Credenciales BDE/SI3
 
-Cada usuario debe crear o activar sus propias credenciales en el [portal
-BDE/SI3](https://si3.bcentral.cl/siete). `usebcch` no crea cuentas, no entrega
-usuarios ni contraseñas y nunca distribuye credenciales.
+La documentacion publica del BCCh describe crear una cuenta en BDE y activar
+las credenciales de la API. usebcch admite ese formato heredado mediante
+BCCH_USER y BCCH_PASSWORD. Algunas cuentas tambien muestran un API Key Token
+en Mi Cuenta > Apikey Token; en ese caso puede usar BCCH_TOKEN, token() o un
+archivo de una sola linea con el token.
 
-La opción recomendada es registrar una vez un archivo `.env` privado:
+Para el formato entregado por su cuenta, guarde las credenciales en un archivo
+.env privado:
+
+```text
+BCCH_TOKEN=mi_api_key_token
+```
+
+O, si el portal entrega usuario y contrasena:
+
+```text
+BCCH_USER=mi_usuario
+BCCH_PASSWORD=mi_contrasena
+```
+
+Registre la ruta una sola vez en Stata:
 
 ```stata
 usebcch auth set, envfile("C:/private/bcch.env")
 usebcch auth status
 ```
 
-El archivo `.env` es personal y nunca debe incluirse en el repositorio. También
-pueden utilizarse `BCCH_USER` y `BCCH_PASSWORD` como variables de entorno o la
-opción `credentials()` para archivos de dos líneas.
+usebcch guarda unicamente la ruta; nunca copia ni distribuye secretos. La API
+limita a cinco series por segundo por cuenta, independientemente de la IP.
 
 ## Ejemplos
 
@@ -133,7 +148,8 @@ HTTP, el parser JSON y la materialización de datasets son nativos de Stata/Mata
 ## Fuente oficial
 
 - [Banco Central de Chile](https://www.bcentral.cl/)
-- [API BDE y condiciones de uso](https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/index.htm)
+- [Documentación técnica de la API BDE](https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/doc_es.htm)
+- [Términos y condiciones](https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/index_BDE_TC.htm)
 - [Portal BDE/SI3](https://si3.bcentral.cl/siete)
 
 ## Autor

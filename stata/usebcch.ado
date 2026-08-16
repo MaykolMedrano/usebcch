@@ -1,4 +1,4 @@
-*! usebcch 0.4.0 22jul2026
+*! usebcch 0.5.0 16aug2026
 program define usebcch, rclass
     version 16.0
     gettoken subcommand 0 : 0, parse(" ,")
@@ -28,7 +28,7 @@ end
 program define _usebcch_get, rclass
     version 16.0
     syntax anything(name=series id="series codes") [, FROM(string) TO(string) ///
-        NAMES(string) LONG CLEAR CREDentials(string) ENVfile(string) ///
+        NAMES(string) LONG CLEAR TOKEN(string) CREDentials(string) ENVfile(string) ///
         FREQuency(string) AGGregate(string) VARiation(integer 0) SKIPInvalid]
     _usebcch_require_clear, `clear'
     if "`from'"!="" _usebcch_validate_date `"`from'"', option("from()")
@@ -55,6 +55,7 @@ program define _usebcch_get, rclass
     if "`long'"!="" local workeropts `workeropts' long
     if `"`credentials'"'!="" local workeropts `workeropts' credentials(`"`credentials'"')
     if `"`envfile'"'!="" local workeropts `workeropts' envfile(`"`envfile'"')
+    if `"`token'"'!="" local workeropts `workeropts' token(`"`token'"')
     if `"`frequency'"'!="" local workeropts `workeropts' frequency(`frequency')
     if `"`aggregate'"'!="" local workeropts `workeropts' aggregate(`"`aggregate'"')
     if `variation'>0 local workeropts `workeropts' variation(`variation')
@@ -136,15 +137,17 @@ end
 program define _usebcch_get_work, rclass
     version 16.0
     syntax anything(name=series) [, FROM(string) TO(string) NAMES(string) ///
-        LONG CREDentials(string) ENVfile(string) FREQuency(string) ///
+        LONG TOKEN(string) CREDentials(string) ENVfile(string) FREQuency(string) ///
         AGGregate(string) VARiation(integer 0) SKIPInvalid]
     _usebcch_load_mata
     local credarg
     if `"`credentials'"'!="" local credarg credentials(`"`credentials'"')
     if `"`envfile'"'!="" local credarg `credarg' envfile(`"`envfile'"')
+    if `"`token'"'!="" local credarg `credarg' token(`"`token'"')
     _usebcch_credentials, `credarg'
     local auth_user `"`_ub_auth_user'"'
     local auth_pass `"`_ub_auth_pass'"'
+    local auth_token `"`_ub_auth_token'"'
 
     local series : subinstr local series "," " ", all
     local series : list retokenize series
@@ -213,9 +216,16 @@ program define _usebcch_get_work, rclass
     local successes=0
     foreach id of local series {
         local ++index
+        * Respect the BCCh limit of five series requests per second.
+        if `index'>1 & mod(`index'-1,5)==0 sleep 1000
         mata: ubcch_encode_locals("","", ///
             st_local("from"),st_local("to"),st_local("id"),"")
-        local url "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx?user=`auth_user'&pass=`auth_pass'&firstdate=`_ub_first'&lastdate=`_ub_last'&timeseries=`_ub_series'&function=GetSeries"
+        local url "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx?"
+        if "`auth_token'"!="" local url "`url'token=`auth_token'"
+        else local url "`url'user=`auth_user'&pass=`auth_pass'"
+        if "`from'"!="" local url "`url'&firstdate=`_ub_first'"
+        if "`to'"!="" local url "`url'&lastdate=`_ub_last'"
+        local url "`url'&timeseries=`_ub_series'&function=GetSeries"
         tempfile response
         _usebcch_copy `"`url'"' `"`response'"'
         local url ""
@@ -430,7 +440,7 @@ end
 program define _usebcch_search, rclass
     version 16.0
     syntax anything(name=query id="search text") [, FREQuency(string) ///
-        LANGuage(string) CLEAR CREDentials(string) ENVfile(string) ///
+        LANGuage(string) CLEAR TOKEN(string) CREDentials(string) ENVfile(string) ///
         REGEX CACHE REFRESH]
     local query : list clean query
     _usebcch_require_clear, `clear'
@@ -451,6 +461,7 @@ program define _usebcch_search, rclass
     local credarg
     if `"`credentials'"'!="" local credarg credentials(`"`credentials'"')
     if `"`envfile'"'!="" local credarg `credarg' envfile(`"`envfile'"')
+    if `"`token'"'!="" local credarg `credarg' token(`"`token'"')
     preserve
     capture noisily _usebcch_search_work `query', frequency(`frequency') ///
         language(`language') `credarg' `regex' `cache' `refresh'
@@ -471,11 +482,12 @@ end
 program define _usebcch_search_work, rclass
     version 16.0
     syntax anything(name=query) [, FREQuency(string) LANGuage(string) ///
-        CREDentials(string) ENVfile(string) REGEX CACHE REFRESH]
+        TOKEN(string) CREDentials(string) ENVfile(string) REGEX CACHE REFRESH]
     _usebcch_load_mata
     local credarg
     if `"`credentials'"'!="" local credarg credentials(`"`credentials'"')
     if `"`envfile'"'!="" local credarg `credarg' envfile(`"`envfile'"')
+    if `"`token'"'!="" local credarg `credarg' token(`"`token'"')
     local frequencies=cond("`frequency'"=="all", ///
         "DAILY MONTHLY QUARTERLY ANNUAL",upper("`frequency'"))
     local auth_ready=0
@@ -513,11 +525,15 @@ program define _usebcch_search_work, rclass
             _usebcch_credentials, `credarg'
             local auth_user `"`_ub_auth_user'"'
             local auth_pass `"`_ub_auth_pass'"'
+            local auth_token `"`_ub_auth_token'"'
             local auth_ready=1
         }
         mata: ubcch_encode_locals("","", ///
             "","","",st_local("freq"))
-        local url "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx?user=`auth_user'&pass=`auth_pass'&frequency=`_ub_frequency'&function=SearchSeries"
+        local url "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx?"
+        if "`auth_token'"!="" local url "`url'token=`auth_token'"
+        else local url "`url'user=`auth_user'&pass=`auth_pass'"
+        local url "`url'&frequency=`_ub_frequency'&function=SearchSeries"
         tempfile response
         _usebcch_copy `"`url'"' `"`response'"'
         local url ""
@@ -634,7 +650,7 @@ program define _usebcch_auth, rclass
         _usebcch_load_mata
         mata: ubcch_dotenv_auth(st_local("selected"))
         if !real(`"`_ub_file_ok'"') {
-            display as error "envfile() must define BCCH_USER and BCCH_PASSWORD"
+            display as error "envfile() must define BCCH_TOKEN or BCCH_USER and BCCH_PASSWORD"
             exit 198
         }
         tempname config_handle
@@ -699,7 +715,7 @@ end
 program define _usebcch_load_mata
     version 16.0
 
-    capture mata: assert(ubcch_core_version()=="0.4.0")
+    capture mata: assert(ubcch_core_version()=="0.5.0")
     if !_rc exit
 
     /* Ado updates do not clear compiled Mata functions.  Drop only this
@@ -724,13 +740,28 @@ end
 
 program define _usebcch_credentials
     version 16.0
-    syntax [, CREDentials(string) ENVfile(string)]
+    syntax [, TOKEN(string) CREDentials(string) ENVfile(string)]
     if `"`credentials'"'!="" & `"`envfile'"'!="" {
         display as error "credentials() and envfile() may not be combined"
         exit 198
     }
+    if `"`token'"'!="" & (`"`credentials'"'!="" | `"`envfile'"'!="") {
+        display as error "token() cannot be combined with credentials() or envfile()"
+        exit 198
+    }
+
+    local token=trim(`"`token'"')
     local user
     local password
+
+    if `"`token'"'!="" {
+        mata: st_local("_ub_encoded_token",ubcch_urlencode(st_local("token")))
+        c_local _ub_auth_token `"`_ub_encoded_token'"'
+        c_local _ub_auth_user ""
+        c_local _ub_auth_pass ""
+        exit
+    }
+
     if `"`credentials'"'!="" {
         tempname handle
         capture file open `handle' using `"`credentials'"', read text
@@ -741,18 +772,36 @@ program define _usebcch_credentials
         file read `handle' user
         file read `handle' password
         file close `handle'
+        if `"`password'"'=="" {
+            local token=trim(`"`user'"')
+            mata: st_local("_ub_encoded_token",ubcch_urlencode(st_local("token")))
+            c_local _ub_auth_token `"`_ub_encoded_token'"'
+            c_local _ub_auth_user ""
+            c_local _ub_auth_pass ""
+            exit
+        }
     }
     else if `"`envfile'"'!="" {
         mata: ubcch_dotenv_auth(st_local("envfile"))
         if !real(`"`_ub_file_ok'"') {
-            display as error "envfile() must define BCCH_USER and BCCH_PASSWORD"
+            display as error "envfile() must define BCCH_TOKEN or BCCH_USER and BCCH_PASSWORD"
             exit 198
         }
+        c_local _ub_auth_token `"`_ub_file_token'"'
         c_local _ub_auth_user `"`_ub_file_user'"'
         c_local _ub_auth_pass `"`_ub_file_pass'"'
         exit
     }
     else {
+        local token : environment BCCH_TOKEN
+        if `"`token'"'!="" {
+            mata: st_local("_ub_encoded_token",ubcch_urlencode(st_local("token")))
+            c_local _ub_auth_token `"`_ub_encoded_token'"'
+            c_local _ub_auth_user ""
+            c_local _ub_auth_pass ""
+            exit
+        }
+
         local user : environment BCCH_USER
         local password : environment BCCH_PASSWORD
         if (`"`user'"'=="" | `"`password'"'=="") {
@@ -760,6 +809,7 @@ program define _usebcch_credentials
             if !_rc {
                 mata: ubcch_dotenv_auth(".env")
                 if real(`"`_ub_file_ok'"') {
+                    c_local _ub_auth_token `"`_ub_file_token'"'
                     c_local _ub_auth_user `"`_ub_file_user'"'
                     c_local _ub_auth_pass `"`_ub_file_pass'"'
                     exit
@@ -776,6 +826,7 @@ program define _usebcch_credentials
                 if !_rc {
                     mata: ubcch_dotenv_auth(st_local("registered_envfile"))
                     if real(`"`_ub_file_ok'"') {
+                        c_local _ub_auth_token `"`_ub_file_token'"'
                         c_local _ub_auth_user `"`_ub_file_user'"'
                         c_local _ub_auth_pass `"`_ub_file_pass'"'
                         exit
@@ -784,17 +835,17 @@ program define _usebcch_credentials
             }
         }
     }
+
     if `"`user'"'=="" | `"`password'"'=="" {
-        display as error "credentials not found; run usebcch auth set, envfile(filename)"
-        display as error "or define BCCH_USER/BCCH_PASSWORD, envfile(), or credentials()"
+        display as error "credentials not found; set BCCH_TOKEN, run usebcch auth set, envfile(filename), or define BCCH_USER/BCCH_PASSWORD"
         exit 198
     }
     mata: st_local("_ub_encoded_user",ubcch_urlencode(st_local("user")))
     mata: st_local("_ub_encoded_pass",ubcch_urlencode(st_local("password")))
+    c_local _ub_auth_token ""
     c_local _ub_auth_user `"`_ub_encoded_user'"'
     c_local _ub_auth_pass `"`_ub_encoded_pass'"'
 end
-
 program define _usebcch_copy
     version 16.0
     args url destination
@@ -814,7 +865,7 @@ program define _usebcch_api_error
     version 16.0
     syntax, CODE(real) OPERATION(string) [DESCRIPTION(string asis)]
     if `code'==0 exit
-    if `code'==-5 display as error "invalid BCCh API credentials"
+    if `code'==-5 display as error "invalid BCCh API token or legacy credentials"
     else if `code'==-50 & "`operation'"=="get" display as error "series not found"
     else if `code'==-1 & "`operation'"=="get" display as error "invalid date"
     else if `code'==-1 & "`operation'"=="search" display as error "invalid frequency"

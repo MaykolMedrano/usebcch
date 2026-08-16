@@ -1,7 +1,7 @@
 v 3
 d usebcch: cliente de la API BDE del Banco Central de Chile para Stata
-d Version 0.4.0
-d Fecha de distribución: 20260722
+d Version 0.5.0
+d Fecha de distribución: 20260816
 d Requiere Stata 16 o superior
 d Licencia: MIT
 d Autor: Maykol Medrano

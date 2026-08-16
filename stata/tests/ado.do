@@ -14,7 +14,7 @@ string scalar ubcch_urlencode(string scalar value)
 end
 do stata/usebcch.ado
 _usebcch_load_mata
-mata: assert(ubcch_core_version()=="0.4.0")
+mata: assert(ubcch_core_version()=="0.5.0")
 mata: assert(ubcch_urlencode("a b")=="a%20b")
 _usebcch_load_mata
 

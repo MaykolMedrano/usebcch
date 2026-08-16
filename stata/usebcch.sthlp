@@ -1,7 +1,7 @@
 {smcl}
-{* *! usebcch 0.4.0 22jul2026}{...}
+{* *! usebcch 0.5.0 16aug2026}{...}
 {vieweralsosee "Portal BDE/SI3" "https://si3.bcentral.cl/siete"}{...}
-{vieweralsosee "Sitio de la API BDE" "https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/index.htm"}{...}
+{vieweralsosee "Portal y documentación de la API BDE" "https://si3.bcentral.cl/estadisticas/Principal1/Web_Services/doc_es.htm"}{...}
 {title:Título}
 
 {phang}
@@ -14,7 +14,8 @@ Estadísticos (BDE) del Banco Central de Chile{p_end}
 {cmd:usebcch} es un cliente nativo para Stata 16 o superior. Descarga una o
 varias series, busca códigos en el catálogo, convierte frecuencias, calcula
 variaciones y administra un caché persistente. No requiere Python. La API del
-BCCh sí requiere usuario y contraseña.{p_end}
+BCCh requiere una cuenta BDE con credenciales activadas; admite usuario/contraseña
+y, cuando la cuenta lo ofrece, API Key Token.{p_end}
 
 {pstd}
 Los cuatro subcomandos son {cmd:get}, {cmd:search}, {cmd:cache} y {cmd:auth}.
@@ -53,14 +54,14 @@ y {cmd:usebcch.pkg}, no a una página HTML ni a un ZIP.{p_end}
 {cmd:usebcch get} {it:códigos_de_serie}
 [{cmd:,} {opt from(fecha)} {opt to(fecha)} {opt names(nombres)} {opt long}
 {opt frequency(frecuencia)} {opt aggregate(funciones)} {opt variation(#)}
-{opt skipinvalid} {opt clear} {opt credentials(archivo)}
+{opt skipinvalid} {opt clear} {opt token(token)} {opt credentials(archivo)}
 {opt envfile(archivo)}]
 
 {p 8 16 2}
 {cmd:usebcch search} {it:"texto"}
 [{cmd:,} {opt frequency(frecuencia)} {opt language(idioma)} {opt regex}
-{opt cache} {opt refresh} {opt clear} {opt credentials(archivo)}
-{opt envfile(archivo)}]
+{opt cache} {opt refresh} {opt clear} {opt token(token)}
+{opt credentials(archivo)} {opt envfile(archivo)}]
 
 {p 8 16 2}
 {cmd:usebcch cache} {cmd:status}|{cmd:clear}
@@ -74,33 +75,36 @@ y {cmd:usebcch.pkg}, no a una página HTML ni a un ZIP.{p_end}
 {title:Credenciales}
 
 {pstd}
-Antes del primer llamado, cada usuario debe crear o activar su propia cuenta
-en el {browse "portal BDE/SI3" "https://si3.bcentral.cl/siete"}; seleccione
-{bf:Registrarse}. Los usuarios existentes pueden elegir {bf:Usuario Registrado}
-o {bf:Recuperar Contraseña}. {cmd:usebcch} no crea cuentas ni entrega usuarios
-o contraseñas.{p_end}
+La documentacion publica del BCCh indica crear una cuenta BDE y activar las
+credenciales de la API. El formato documentado usa {cmd:BCCH_USER} y
+{cmd:BCCH_PASSWORD}. Algunas cuentas tambien muestran un {bf:API Key Token} en
+{bf:Mi Cuenta > Apikey Token}; en ese caso puede usar {cmd:BCCH_TOKEN} o
+{opt token()}.
 
 {pstd}
-El método recomendado es guardar las credenciales en un archivo privado, por
-ejemplo {cmd:C:/credenciales/bcch.env}:{p_end}
+Guarde el formato entregado por el portal en un archivo privado, por ejemplo
+{cmd:C:/credenciales/bcch.env}:{p_end}
 
 {phang2}{cmd:BCCH_USER=mi_usuario}{p_end}
-{phang2}{cmd:BCCH_PASSWORD=mi_contraseña}{p_end}
+{phang2}{cmd:BCCH_PASSWORD=mi_contrasena}{p_end}
 
 {pstd}
-{cmd:usebcch auth set, envfile(...)} registra solamente la ruta del archivo
-bajo el directorio PERSONAL de Stata. No copia ni guarda el usuario o la
-contraseña. {cmd:auth clear} elimina el registro, pero no borra el `.env`.
-Nunca incorpore el archivo secreto a un repositorio.{p_end}
+Si su cuenta entrega token, use {cmd:BCCH_TOKEN=mi_api_key_token} en lugar del
+par anterior. {cmd:usebcch auth set, envfile(...)} registra solamente la ruta
+del archivo bajo {cmd:PERSONAL}; no copia ni guarda secretos.{p_end}
 
 {pstd}
-Las fuentes se evalúan en este orden: {opt credentials()}, {opt envfile()}, el
-par de variables de entorno {cmd:BCCH_USER}/{cmd:BCCH_PASSWORD}, un `.env` en el
+Las fuentes se evaluan en este orden: {opt token()}, {opt credentials()},
+{opt envfile()}, la variable de entorno {cmd:BCCH_TOKEN}, un `.env` en el
 directorio de trabajo y, finalmente, el archivo registrado mediante
-{cmd:auth set}. {opt credentials()} y {opt envfile()} no pueden combinarse.
-{opt credentials()} lee usuario y contraseña desde la primera y segunda línea
-de un archivo de texto.{p_end}
+{cmd:auth set}. {opt token()} no puede combinarse con {opt credentials()} ni
+{opt envfile()}. {opt credentials()} acepta un archivo de una sola linea con
+el token o el formato heredado de usuario y contrasena en dos lineas.{p_end}
 
+{pstd}
+El limite publicado es de cinco series por segundo por cuenta,
+independientemente de la direccion IP. Respete este limite para evitar la
+suspension del servicio.{p_end}
 {title:Opciones de get}
 
 {phang}
@@ -264,7 +268,7 @@ guarda {cmd:r(code#)}, {cmd:r(name#)}, {cmd:r(title_es#)} y
 {title:Problemas frecuentes}
 
 {phang}
-{bf:Mensaje sobre BCCH_USER y BCCH_PASSWORD:} ejecute {cmd:usebcch auth status};
+{bf:Mensaje sobre el token o las credenciales:} ejecute {cmd:usebcch auth status};
 si no hay una configuración válida, registre el `.env` mediante
 {cmd:usebcch auth set, envfile("ruta")}.{p_end}
 

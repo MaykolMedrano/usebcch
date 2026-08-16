@@ -1,6 +1,6 @@
 v 3
 d usebcch: acceso a la API BDE del Banco Central de Chile
-d Version 0.4.0; requiere Stata 16 o posterior; licencia MIT
+d Version 0.5.0; requiere Stata 16 o posterior; licencia MIT
 d Autor: Maykol Medrano; Pontificia Universidad Católica de Chile
 d Contacto: mmedrano2@uc.cl; github.com/MaykolMedrano
 p usebcch Cliente nativo de series de tiempo del BCCh para Stata

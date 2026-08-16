@@ -7,31 +7,38 @@ literales del servicio del Banco Central.
 
 ## Transporte y solicitudes
 
-El endpoint es `https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx`. Todas las
-operaciones son solicitudes HTTP GET con parámetros en la query.
+El endpoint REST publicado es
+`https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx`. Todas las operaciones
+son solicitudes HTTPS GET con parámetros en la query.
 
-`GetSeries` envía exactamente estos parámetros conceptuales:
+La documentación pública describe `user` y `pass` como credenciales activadas
+para la cuenta BDE. Algunas cuentas pueden ofrecer un API Key Token; `usebcch`
+lo acepta como `token` y prioriza ese método cuando está disponible. El formato
+heredado continúa soportado.
+
+`GetSeries` envía estos parámetros conceptuales:
 
 | Parámetro | Valor |
 |---|---|
-| `user` | usuario |
-| `pass` | contraseña |
-| `firstdate` | fecha inicial o cadena vacía |
-| `lastdate` | fecha final o cadena vacía |
+| `token` | API Key Token, si la cuenta lo entrega |
+| `user` | usuario BDE heredado |
+| `pass` | contraseña BDE heredada |
+| `firstdate` | fecha inicial opcional |
+| `lastdate` | fecha final opcional |
 | `timeseries` | identificador de serie |
 | `function` | `GetSeries` |
 
-`SearchSeries` reemplaza fechas y serie por `frequency`, y envía
-`function=SearchSeries`. Las frecuencias admitidas por la biblioteca son
-`DAILY`, `MONTHLY`, `QUARTERLY` y `ANNUAL`. `bcchapi` no normaliza mayúsculas ni
-valida localmente la frecuencia: consulta primero al servidor.
+Si `firstdate` o `lastdate` no se especifican, se omiten de la query para que
+el servidor aplique sus límites predeterminados.
 
-La implementación Stata debe codificar la query correctamente, en particular
-credenciales y caracteres reservados, y nunca mostrar `pass` en mensajes. Debe
-distinguir errores HTTP/de red de una respuesta JSON válida con `Codigo != 0`.
-La versión Python llama `raise_for_status()` y luego decodifica JSON; no define
-timeout ni reintentos.
+`SearchSeries` reemplaza fechas y serie por `frequency` y envía
+`function=SearchSeries`. Las frecuencias admitidas son `DAILY`, `MONTHLY`,
+`QUARTERLY` y `ANNUAL`.
 
+La implementación Stata codifica tokens y credenciales con URL encoding y
+nunca los muestra en mensajes. Debe distinguir errores HTTP/de red de una
+respuesta JSON válida con `Codigo != 0`. El BCCh limita a cinco series por
+segundo por cuenta, independientemente de la dirección IP.
 ## Sobre de respuesta
 
 `bcchapi.WSResponse` exige cuatro claves de nivel superior, con coincidencia
